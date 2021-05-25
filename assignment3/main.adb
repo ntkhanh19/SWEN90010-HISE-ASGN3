@@ -221,7 +221,35 @@ begin
                         
                         
                      elsif GetToken(1) = "-" then
-                        Put_Line("TO DO: -");
+                     
+                         if NumTokens = 1 then -- check valid NumTokens
+                           if L = Unlocked then -- check lock state
+                              if MyStack.Size(MS) > 1 then -- check precondition
+                                 declare
+                                    num1 : Integer;
+                                    num2 : Integer;
+                                 begin
+                                    MyStack.Pop(MS, num1);
+                                    MyStack.Pop(MS, num2);
+                                    
+                                    if (if num1 >= 0 then num2 >= Integer'First + num1
+                                        else num2 <= Integer'Last + num1) then
+
+                                       --body of the operation
+                                       MyStack.Push(MS, num2-num1);
+                                          
+                                    else
+                                       Put_Line("Overflow.");
+                                    end if;
+                                 
+                                 end;
+                              else
+                                 Put_Line("Not enough variables for caculation.");
+                              end if;
+                           end if; --otherwise: locked state, do nothing
+                        else
+                           RaiseInvalidFlag("Invalid Input : Wrong number of tokens.");
+                        end if;
                         
                         
                         
