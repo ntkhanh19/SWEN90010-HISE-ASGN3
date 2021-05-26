@@ -63,7 +63,8 @@ begin
    VariableStore.Init(DB);
    MyStack.Init(MS);
    
-   if MyCommandLine.Argument_Count = 1 then 
+   if (if MyCommandLine.Argument_Count = 1 then MyCommandLine.Argument(1)'Length <=4
+       else False) then 
       
       InputLine := Lines.From_String(MyCommandLine.Argument(1));
       
@@ -273,11 +274,15 @@ begin
                                     MyStack.Pop(MS, num1);
                                     MyStack.Pop(MS, num2);
                                     
-                                    if (if num1 = 0 then True
-                                        elsif num1 = -1 then num2 /= Integer'First
-                                        elsif num1 > 0 then ((num2 >= Integer'First / num1) and (num2 <= Integer'Last / num1))
-                                        else ((num2 >= Integer'Last / num1) and (num2 <= Integer'First / num1))) then
-                                       
+                                    --if (if num1 = 0 then True
+                                        --elsif num1 = -1 then num2 /= Integer'First
+                                        --elsif num1 > 0 then ((num2 >= Integer'First / num1) and (num2 <= Integer'Last / num1))
+                                        --else ((num2 >= Integer'Last / num1) and (num2 <= Integer'First / num1))) then
+                                     if( if num1 > 0 and num2 > 0 then num1 >= (Integer'First+1)/num2 and num1 <= Integer'Last/num2
+                                        elsif num1 >= 0 and num2 < 0 then num1 <= (Integer'First+1)/num2 and num1 >= Integer'Last/num2
+                                        elsif num1 < 0 and num2 >= 0 then num2 <= (Integer'First+1)/num1 and num2 >= Integer'Last/num1
+                                        elsif num1 < 0 and num2 < 0 then num1 <= (Integer'First+1)/num2 and num1 >= Integer'Last/num2
+                                        elsif num1 = 0 or num2 = 0 then True) then
                                        --body of the operation
                                        MyStack.Push(MS, num1 * num2);
                                           
